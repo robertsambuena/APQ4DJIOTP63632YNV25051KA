@@ -1,13 +1,24 @@
-# Simple github search app
+# Org the dog
+![logo](https://github.com/robertsambuena/APQ4DJIOTP63632YNV25051KA/assets/4904145/82b90e60-9330-4260-89e1-5126031af35b)
 
-### Notes:
+A simple github repo search by org app! (That's a mouthful, I know 😄)
+
+### Notes
 
 This app was made by utilizing Octokit as SDK for Github API
 
-Repo searching is done via API calls, but filtering by open issues are done in the client.
+Bootstrapped by `create-react-app`
+
+Utilized `react-hook-form`, `react-query`, and `material-ui`
+
+Org and repo searching is done via API calls, but filtering by open issues are done in the client.
 
 ![Screenshot 2024-05-03 at 19 12 46](https://github.com/robertsambuena/APQ4DJIOTP63632YNV25051KA/assets/4904145/7a53e857-3435-4570-ba71-e3377b4fbb74)
 
+### Tokens
+
+Github has lower rate limiting for unauthenticated requests.
+To fetch more results per minute, please add `REACT_APP_GITHUB_TOKEN=your_github_token_here`
 
 ### React related instructions since this project was bootstrapped with react
 
