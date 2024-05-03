@@ -1,20 +1,23 @@
 import { Autocomplete, CircularProgress, TextField } from "@mui/material"
 import { useSearchOrgs } from "../../hooks/useSearchOrgs"
-import { FC } from "react"
+import { FC, useMemo } from "react"
 import { useDebounceState } from "../../hooks/useDebounceState"
 import SearchIcon from '@mui/icons-material/Search'
 import { Organization } from "../../types/organization"
 
 type OrganizationsProps = {
   onSelect: (selectedOrg: Organization| null) => void
+  disabled?: boolean
 }
 
 export const Organizations: FC<OrganizationsProps> = (props) => {
-  const { onSelect } = props
-  const {debouncedSearchKey, setSearchKey} = useDebounceState()
+  const { onSelect, disabled } = props
+  const { debouncedSearchKey, setSearchKey } = useDebounceState()
   const { data, isFetching } = useSearchOrgs(debouncedSearchKey)
 
-  const orgs = data ?? []
+  const orgs = useMemo(() => {
+    return data ?? []
+  }, [data])
 
   return (
     <Autocomplete
@@ -37,6 +40,7 @@ export const Organizations: FC<OrganizationsProps> = (props) => {
         )
       }}
       onChange={(_, selectedOrg) => onSelect(selectedOrg)}
+      disabled={disabled}
     />
   )
 }

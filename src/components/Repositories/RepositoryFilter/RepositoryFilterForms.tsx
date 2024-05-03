@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material"
+import { Box, TextField } from "@mui/material"
 import { FC, useEffect } from "react"
 import { Controller, FormProvider, useForm } from "react-hook-form"
 import { TextFieldWithDebounce } from "../../../common/TextFieldWithDebounce"
@@ -9,10 +9,11 @@ import { setNullOrNumber } from "../../../utils/formHelper"
 
 type RepositoryFilterFormsProps = {
   onChange: (value: RepoFilterFormState) => void
+  disabled?: boolean
 }
 
 export const RepositoryFilterForms: FC<RepositoryFilterFormsProps> = (props) => {
-  const { onChange } = props
+  const { onChange, disabled } = props
 
   const methods = useForm<RepoFilterFormState>({
     mode: 'onChange',
@@ -26,40 +27,83 @@ export const RepositoryFilterForms: FC<RepositoryFilterFormsProps> = (props) => 
     handleSubmit,
     watch,
     formState: { errors },
-    trigger,
   }  = methods
 
+  const submitCb = () => {
+    onChange(watch())
+  }
+
   /**
-   * This is a workaround to trigger the form validation when the form is submitted.
+   * This is a workaround to trigger the form validation when the form has changed.
    */
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onChange)())
+    const subscription = watch(() => {
+      handleSubmit(submitCb)()
+    })
     return () => subscription.unsubscribe()
+
+    // eslint-disable-next-line
 }, [handleSubmit, watch])
 
   return (
     <FormProvider {...methods}>
       <form>
+        <Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
+          <Box sx={{width: 600}}>
+            <Controller
+              name="searchKey"
+              control={control}
+              render={({field: {onChange}}) => {
+                return (
+                  <TextFieldWithDebounce
+                    label="Filter repositories"
+                    fullWidth
+                    disabled={disabled}
+                    onSearch={onChange}
+                    error={!!errors.searchKey}
+                    helperText={errors.searchKey?.message}
+                  />
+                )
+              }}
+            />
+          </Box>
 
-        <Box sx={{width: 800, display: 'flex', alignItems: 'center'}}>
-          <Box sx={{marginRight: 2, width: 800}}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{width: 400}}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
 
-              <Typography variant="body1">Filter by open issues:</Typography>
-
-              <Box sx={{ marginRight: 2 }}>
+              <Box sx={{ marginRight: 2, maxWidth: 200 }}>
                 <Controller
                   name="minOpenIssues"
                   control={control}
-                  render={({field: {value, onChange}, ...fieldProps}) => {
+                  render={({field: {value, onChange}}) => {
                     return (
                       <TextField
-                        {...fieldProps}
-                        label="Min Star"
+                        label="Min open issues"
                         value={value ?? null}
                         type="number"
+                        disabled={disabled}
                         onChange={(e) => onChange(setNullOrNumber(e.target.value))}
                         error={!!errors.minOpenIssues}
+                        helperText={errors.minOpenIssues?.message}
+                      />
+                    )
+                  }}
+                />
+              </Box>
+
+              <Box sx={{ maxWidth: 200 }}>
+                <Controller
+                  name="maxOpenIssues"
+                  control={control}
+                  render={({field: {value, onChange}}) => {
+                    return (
+                      <TextField
+                        label="Max open issues"
+                        value={value ?? null}
+                        type="number"
+                        disabled={disabled}
+                        onChange={(e) => onChange(setNullOrNumber(e.target.value))}
+                        error={!!errors.maxOpenIssues}
                         helperText={errors.maxOpenIssues?.message}
                       />
                     )
@@ -67,44 +111,9 @@ export const RepositoryFilterForms: FC<RepositoryFilterFormsProps> = (props) => 
                 />
               </Box>
 
-              <Controller
-                name="maxOpenIssues"
-                control={control}
-                render={({field: {value, onChange}, ...fieldProps}) => {
-                  return (
-                    <TextField
-                      {...fieldProps}
-                      label="Max Star"
-                      value={value ?? null}
-                      type="number"
-                      onChange={(e) => onChange(setNullOrNumber(e.target.value))}
-                      error={!!errors.minOpenIssues}
-                      helperText={errors.maxOpenIssues?.message}
-                    />
-                  )
-                }}
-              />
-
             </Box>
           </Box>
 
-          <Controller
-            name="searchKey"
-            control={control}
-            render={({field: {onChange}}) => {
-              const handleSearch = (searchKey: string) => {
-                onChange(searchKey)
-                trigger('searchKey')
-              }
-              return (
-                <TextFieldWithDebounce
-                  label="Filter repositories"
-                  fullWidth
-                  onSearch={handleSearch}
-                />
-              )
-            }}
-          />
         </Box>
 
       </form>

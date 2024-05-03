@@ -10,7 +10,8 @@ import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import { ErrorBoundary } from 'react-error-boundary'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,7 +19,10 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 5, // 5 minutes
       staleTime: 0
     }
-  }
+  },
+  queryCache: new QueryCache({
+    onError: (error) => toast.error(`Something went wrong: ${error.message}`),
+  })
 })
 
 const root = ReactDOM.createRoot(
