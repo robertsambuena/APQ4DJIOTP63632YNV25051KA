@@ -12,7 +12,7 @@ export const TextFieldWithDebounce: FC<TextFieldWithDebounceProps> = (props) => 
 
   useEffect(() => {
     onSearch(debouncedSearchKey)
-  }, [debouncedSearchKey])
+  }, [onSearch, debouncedSearchKey])
   
   return (
     <TextField
