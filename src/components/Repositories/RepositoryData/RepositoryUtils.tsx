@@ -1,10 +1,10 @@
-import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Repo } from "../../../types/repository";
-import { Link } from "@mui/material";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid"
+import { Repo } from "../../../types/repository"
+import { Link } from "@mui/material"
 
 export const columns: GridColDef[] = [{
     field: 'name',
-    headerName: 'Name',
+    headerName: 'Repository name',
     flex: 1,
     renderCell: (params: GridRenderCellParams<Repo, string>) => (
       <Link target="_blank" href={params.row.repoUrl}>{params.value}</Link>

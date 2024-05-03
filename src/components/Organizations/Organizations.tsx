@@ -16,15 +16,17 @@ export const Organizations: FC<OrganizationsProps> = (props) => {
   const { data, isFetching } = useSearchOrgs(debouncedSearchKey)
 
   const orgs = useMemo(() => {
-    return data ?? []
+    if (!data) return []
+
+    return data.map((org) => ({
+      id: org.login,
+      logoUrl: org.avatar_url,
+    }))
   }, [data])
 
   return (
     <Autocomplete
-      options={orgs.map((org) => ({
-        id: org.login,
-        logoUrl: org.avatar_url,
-      }))}
+      options={orgs}
       getOptionLabel={(org) => org.id}
       renderInput={(params) => {
         return (

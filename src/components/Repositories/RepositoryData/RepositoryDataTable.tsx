@@ -55,9 +55,14 @@ export const RepositoryDataTable: FC<RepositoryDataTableProps> = (props) => {
 
   return (
     <>
-      {showCancelFetch
-        && <Button onClick={() => window.location.reload()} component={Link} >Search is taking a while, click here to reset search.</Button>
+      {showCancelFetch &&
+        (
+          <Button onClick={() => window.location.reload()} component={Link}>
+            Search is taking a while, click here to reset search.
+          </Button>
+        )
       }
+
       <DataGrid
         rows={filteredRepos}
         columns={columns}

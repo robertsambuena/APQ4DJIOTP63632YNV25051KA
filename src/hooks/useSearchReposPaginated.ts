@@ -56,6 +56,7 @@ export const useReposPaginated = (props: UseGithubRepositoriesConfig) => {
         if (error instanceof RequestError) {
           toast.error(octokitErrorHandler('Repositories', error))
         }
+
         return []
       }
     },

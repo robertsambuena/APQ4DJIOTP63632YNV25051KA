@@ -42,6 +42,8 @@ export const RepositoryFilterForms: FC<RepositoryFilterFormsProps> = (props) => 
     })
     return () => subscription.unsubscribe()
 
+    // Removed the warning because linting asks for submitCb to be in the dependency array
+    // But it will cause an infinite loop if it is added.
     // eslint-disable-next-line
 }, [handleSubmit, watch])
 

@@ -8,6 +8,8 @@ function App() {
     <>
       <Routes>
         <Route path="/organization" element={<SearchPage />} />
+
+        {/* Future expansion for a sign in page */}
         <Route path="*" element={<SearchPage />} />
       </Routes>
 

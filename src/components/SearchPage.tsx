@@ -12,7 +12,6 @@ const SearchLogo = styled('img')(({theme}) => ({
   marginRight: theme.spacing(1),
 }))
 
-
 export const SearchPage = () => {
   const [org, setOrg] = useState<Organization | null>(null)
   const isSearchingRepos = useIsFetching({queryKey: ['search-repos']})
@@ -35,7 +34,7 @@ export const SearchPage = () => {
         <CardHeader title={(
           <Box sx={{ display: 'flex' }}>
             <SearchLogo src={logo}/> 
-            Github Search
+            Org the Dog
           </Box>
         )} />
         <Divider/>

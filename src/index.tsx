@@ -12,6 +12,7 @@ import '@fontsource/roboto/700.css'
 import { ErrorBoundary } from 'react-error-boundary'
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import { Alert, Box, Button } from '@mui/material'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,7 +31,14 @@ const root = ReactDOM.createRoot(
 )
 root.render(
   <React.StrictMode>
-    <ErrorBoundary fallback={<div>Oh oh, something bad went wrong, please refresh the page!</div>}>
+    <ErrorBoundary fallback={(
+      <Box sx={{ display: 'flex', justifyContent: 'center'}}>
+        <Alert severity="error">
+          Hey! Unfortunately something absoliutely terrible happened. Please try again.
+          <Button onClick={() => window.location.reload()}>Reload app</Button>
+        </Alert>
+      </Box>
+    )}>
       <QueryClientProvider client={queryClient}>
         <Router>
           <App />
