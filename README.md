@@ -13,8 +13,8 @@ Utilized `react-hook-form`, `react-query`, and `material-ui`
 
 Org and repo searching is done via API calls, but filtering by open issues are done in the client.
 
-![Screenshot 2024-05-03 at 19 12 46](https://github.com/robertsambuena/APQ4DJIOTP63632YNV25051KA/assets/4904145/7a53e857-3435-4570-ba71-e3377b4fbb74)
-
+![Screenshot 2024-05-04 at 01 28 46](https://github.com/robertsambuena/APQ4DJIOTP63632YNV25051KA/assets/4904145/8dd58451-52d0-4dc6-a1eb-0c4f8f6f00eb)
+![Screenshot 2024-05-04 at 01 29 51](https://github.com/robertsambuena/APQ4DJIOTP63632YNV25051KA/assets/4904145/2132d9e6-0517-44d9-86cc-123675cff4c9)
 ### Tokens
 
 Github has lower rate limiting for unauthenticated requests.
