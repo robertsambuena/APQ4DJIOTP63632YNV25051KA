@@ -1,5 +1,5 @@
 import { Autocomplete, CircularProgress, TextField } from "@mui/material"
-import { useSearchOrgs } from "../../hooks/useSearchOrgs"
+import { useSearchOrgs } from "../../hooks/apis/useSearchOrgs"
 import { FC, useMemo } from "react"
 import { useDebounceState } from "../../hooks/useDebounceState"
 import SearchIcon from '@mui/icons-material/Search'
@@ -16,12 +16,7 @@ export const Organizations: FC<OrganizationsProps> = (props) => {
   const { data, isFetching } = useSearchOrgs(debouncedSearchKey)
 
   const orgs = useMemo(() => {
-    if (!data) return []
-
-    return data.map((org) => ({
-      id: org.login,
-      logoUrl: org.avatar_url,
-    }))
+    return data ? data : []
   }, [data])
 
   return (

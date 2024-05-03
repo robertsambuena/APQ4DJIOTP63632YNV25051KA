@@ -1,9 +1,10 @@
 import { DataGrid } from '@mui/x-data-grid'
 import { FC, useEffect, useMemo, useState } from "react"
-import { useReposPaginated } from '../../../hooks/useSearchReposPaginated'
+import { useReposPaginated } from '../../../hooks/apis/useSearchReposPaginated'
 import { RepoFilterFormState } from '../RepositoryFilter/RepositoryFilterTypes'
 import { columns, repoDataFilter } from './RepositoryUtils'
-import { Button, Link } from '@mui/material'
+import toast from 'react-hot-toast'
+import { RepoDataResetSearchBtn, RepoDataSearchWarningToast } from './RepositoryDataWarnings'
 
 type RepositoryDataTableProps = RepoFilterFormState & {
   orgID: string
@@ -23,7 +24,7 @@ export const RepositoryDataTable: FC<RepositoryDataTableProps> = (props) => {
 
   const [showCancelFetch, setShowCancelFetch] = useState<boolean>(false)
 
-  const { data: repos, isFetching } = useReposPaginated({
+  const { data, isFetching } = useReposPaginated({
     org: orgID,
     searchKey,
   })
@@ -32,20 +33,23 @@ export const RepositoryDataTable: FC<RepositoryDataTableProps> = (props) => {
    * Client-side filtering of the repositories based on the filter form state.
    * This is not ideal but for now it's good enough :)
    */
-  const filteredRepos = useMemo(() => {
-    if (!repos) return []
+  const repos = useMemo(() => {
+    if (!data) return []
 
-    return repos.filter((repo) => repoDataFilter(repo, minOpenIssues, maxOpenIssues))
-  }, [repos, minOpenIssues, maxOpenIssues])
+    return data.filter((repo) => repoDataFilter(repo, minOpenIssues, maxOpenIssues))
+  }, [data, minOpenIssues, maxOpenIssues])
 
   /**
    * Workaround to show a button to reset the search if it's taking too long.
+   * Mostly caused by our current implementation where we try to get __all__ of
+   * the org's repositories from the GitHub API.
    */
   useEffect(() => {
     if (isFetching) {
       const timeout = setTimeout(() => {
         setShowCancelFetch(true)
-      }, 3000)
+        toast(() => <RepoDataSearchWarningToast />)
+      }, 5000)
   
       return () => clearTimeout(timeout)
     } else {
@@ -55,16 +59,10 @@ export const RepositoryDataTable: FC<RepositoryDataTableProps> = (props) => {
 
   return (
     <>
-      {showCancelFetch &&
-        (
-          <Button onClick={() => window.location.reload()} component={Link}>
-            Search is taking a while, click here to reset search.
-          </Button>
-        )
-      }
+      {showCancelFetch && <RepoDataResetSearchBtn />}
 
       <DataGrid
-        rows={filteredRepos}
+        rows={repos}
         columns={columns}
         localeText={{ noRowsLabel: 'No results.' }}
         sx={{ minHeight: 200, width: '100%'}}

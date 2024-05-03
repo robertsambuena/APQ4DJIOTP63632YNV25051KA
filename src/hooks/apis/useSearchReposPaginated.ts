@@ -1,10 +1,9 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { PaginatedSearchRepos } from "../services/PaginatedSearchRepos"
-import { PaginatedReposByOrg, PaginatedReposByOrgParams } from "../services/PaginatedReposByOrg"
-import { convertReposToDataGrid } from "../utils/apiHelper/repositoryHelper"
-import toast from "react-hot-toast"
-import { octokitErrorHandler } from "../utils/octokitUtils/octokitErrorHelper"
-import { RequestError } from "octokit"
+import { paginatedSearchRepos } from "../../services/PaginatedSearchRepos"
+import { paginatedReposByOrg } from "../../services/PaginatedReposByOrg"
+import { convertResponseToRepos } from "../../utils/apiHelperUtils/repositoryHelper"
+import { useErrorHandler } from "./useErrorHandler"
+import { Endpoints } from "@octokit/types"
 
 type UseGithubRepositoriesConfig = {
   org: string
@@ -15,11 +14,13 @@ type Params = {
   q: string
   page: number
   per_page: number
-  type?: PaginatedReposByOrgParams['type']
+  type?: Endpoints['GET /orgs/{org}/repos']['parameters']['type']
 }
 
 export const useReposPaginated = (props: UseGithubRepositoriesConfig) => {
   const { org, searchKey } = props
+
+  const { throwErrorToast } = useErrorHandler()
 
   const buildQuery: string[] = []
 
@@ -44,19 +45,16 @@ export const useReposPaginated = (props: UseGithubRepositoriesConfig) => {
 
   return useQuery({
     queryKey: ['search-repos', mode, params.q],
-    queryFn: async () => {
+    queryFn: async ({ queryKey }) => {
       try {
         const data = mode === 'search'
-          ? await PaginatedSearchRepos(params)
-          : await PaginatedReposByOrg({...params, org})
+          ? await paginatedSearchRepos(params)
+          : await paginatedReposByOrg({...params, org})
 
-        return convertReposToDataGrid(data)
+        return convertResponseToRepos(data)
       }
       catch (error: unknown) {
-        if (error instanceof RequestError) {
-          toast.error(octokitErrorHandler('Repositories', error))
-        }
-
+        throwErrorToast(error, queryKey)
         return []
       }
     },
